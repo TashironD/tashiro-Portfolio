@@ -1,0 +1,54 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    <title>家計簿アプリ</title>
+  </head>
+  <body>
+    <div class="container">
+    <h1>家計簿アプリ</h1>
+    <a class="btn btn-info mb-2" href="{% url 'create' %}">明細を追加する</a>
+        <table class="table table table-bordered border-primary">
+            <thead><!-- table head -->
+              <tr><!-- tr:横のヘッド、th:縦のヘッド-->
+                <th scope="col">日付</th><!-- theadの項目名-->
+                <th scope="col">概要</th>
+                <th scope="col">収支</th>
+                <th scope="col">金額</th>
+                <th scope="col">詳細</th>
+                <th scope="col">操作</th>
+              </tr>
+            </thead>
+            <tbody><!--object_listにmodelsのデータが入っている。それをfor文で分配している-->
+              {% for record in object_list %}
+              <tr>
+                <td>{{ record.date  }}</td>
+                <td>{{ record.title  }}</td>
+                <td>{{ record.get_type_display }}</td>
+                <td>{{ record.amount }}</td>
+                <td><a class="btn btn-link" href="{% url 'detail' record.id %}" role="button">見る</a></td><!-- role:役割-->
+                <td><a class="btn btn-primary" href="{% url 'update' record.id %}" role="button">修正する</a>
+                <a class="btn btn-secondary" href="{% url 'delete' record.id %}" role="button">削除する</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+    </div>
+</body>
+</html>
+
+<table class="table table-bordered">
+    ...
+  </table>
+
