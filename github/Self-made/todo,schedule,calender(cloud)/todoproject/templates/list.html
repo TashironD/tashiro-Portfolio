@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}やることリスト{% endblock title %}
+{% block h1 %}menu{% endblock h1 %}
+{% block content %}
+
+
+<body>
+    <div class="container">
+    <h2>ToDoList</h2>
+        <table class="table table table-bordered border-primary">
+            <thead><!-- table head -->
+              <tr><!-- tr:横のヘッド、th:縦のヘッド-->
+                <th scope="col" width="120">状況</th>
+                <th scope="col" width="120">期日</th><!-- theadの項目名-->
+                <th scope="col" width="120">項目</th>
+                <th scope="col" width="120">種類</th>
+                <th scope="col" width="120">操作</th>
+            </thead>
+            <tbody><!--object_listにmodelsのデータが入っている。それをfor文で分配している-->
+              
+              <tr>
+                {% for todo1 in object_list %}
+                {% if todo1.done == 0 and todo1.type == 0 %}
+                <td>{{ todo1.done|yesno:"完了,進行中"}}</td>
+                <td>{{ todo1.end_date |date:"Y/n/j" }}</td>
+                <td>{{ todo1.title  }}</td>
+                <td>{{ todo1.get_type_display }}</td>
+                <td><a class="btn btn-link" href="{% url 'update' todo1.id %}" role="button">編集</a>
+                  <a class="btn btn-link" href="{% url 'delete' todo1.id %}" role="button">削除</a><!-- role:役割-->
+                  <form method="post" action="{% url 'done-check' todo1.id %}" class="d-inline-block">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">終了</button>
+                  </form>
+                  {% endif %}
+                </td>
+               
+              </tr>
+              
+              {% endfor %}
+            </tbody>
+          </table>
+    </div>
+
+
+    <div class="container">
+      <h3>予定</h3>
+          <table class="table table table-bordered border-primary">
+              <thead><!-- table head -->
+                <tr><!-- tr:横のヘッド、th:縦のヘッド-->
+                  <th scope="col" width="120">状況</th>
+                  <th scope="col" width="120">日時</th><!-- theadの項目名-->
+                  <th scope="col" width="120">項目</th>
+                  <th scope="col" width="120">種類</th>
+                  <th scope="col" width="120">操作</th>
+              </thead>
+              <tbody><!--object_listにmodelsのデータが入っている。それをfor文で分配している-->
+                {% for todolist in object_list %}
+                {% if todolist.done == 0 and todolist.type == 1 %}
+                <tr>
+                  <td>{{ todolist.done|yesno:"完了,進行中"}}</td>
+                  <td>{{ todolist.end_date |date:"Y/n/j" }}</td>
+                  <td>{{ todolist.title }}</td>
+                  <td>{{ todolist.get_type_display }}</td>
+                  <td><a class="btn btn-link" href="{% url 'update' todolist.id %}" role="button">編集</a>
+                    <a class="btn btn-link" href="{% url 'delete' todolist.id %}" role="button">削除</a><!-- role:役割-->
+                    <form method="post" action="{% url 'done-check' todolist.id %}" class="d-inline-block">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">終了</button>
+                    </form>
+                  </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+      </div>
+
+      <div class="container">
+        <h3>完了</h3>
+            <table class="table table table-bordered border-primary">
+                <thead><!-- table head -->
+                  <tr><!-- tr:横のヘッド、th:縦のヘッド-->
+                    <th scope="col" width="120">状況</th>
+                    <th scope="col" width="120">日時</th><!-- theadの項目名-->
+                    <th scope="col" width="120">項目</th>
+                    <th scope="col" width="120">種類</th>
+                    <th scope="col" width="120">操作</th>
+                </thead>
+                <tbody><!--object_listにmodelsのデータが入っている。それをfor文で分配している-->
+                  {% for todolist in object_list %}
+                  {% if todolist.done == 1 %}
+                  <tr>
+                    <td>{{ todolist.done|yesno:"完了,進行中"}}</td>
+                    <td>{{ todolist.end_date |date:"Y/n/j" }}</td>
+                    <td>{{ todolist.title }}</td>
+                    <td>{{ todolist.get_type_display }}</td>
+                    <td><a class="btn btn-link" href="{% url 'update' todolist.id %}" role="button">編集</a>
+                      <a class="btn btn-link" href="{% url 'delete' todolist.id %}" role="button">削除</a><!-- role:役割-->
+                      <form method="post" action="{% url 'done-check' todolist.id %}" class="d-inline-block">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">取消</button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+        </div>
+
+
+</body>
+
+
+{% endblock content %}
