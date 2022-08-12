@@ -1,38 +1,36 @@
 
 
-import requests
-from datetime import datetime,timedelta,timezone
-from bs4 import BeautifulSoup as bs
-import time
+import requests#API処理のため
+from datetime import datetime,timedelta,timezone#日にち、時間
+from bs4 import BeautifulSoup as bs#HTMLを解析する為
+import time#サーバーへの負荷を減らすために処理を止めるタイマー
 
 
 #NEWSAPI
-load_url="https://news.yahoo.co.jp/topics/top-picks"
-html=requests.get(load_url)
-soup=bs(html.content,"html.parser")
-#topic=soup.find("ul",class_="newsFeed_list")
-topic=soup.find_all("div",class_="newsFeed_item_title")
-news_mess=""
+load_url="https://news.yahoo.co.jp/topics/top-picks"#yahooサイトのURL
+html=requests.get(load_url)#サイト情報を格納
+soup=bs(html.content,"html.parser")#BeautifulSoupでhtmlを解析
+topic=soup.find_all("div",class_="newsFeed_item_title")#ニュースタイトルだけを抜き出す
+news_mess=""#空のメッセージ変数を作成
+#順番にメッセージに追加していく
 for erements in topic:
     news_mess+="\n"+"#"+erements.text
-
-
+#自分で詳細を見にいけるようにURLも記載
 news_mess+=load_url
 
 
 #天気API
 #APIをコールする
 url ="http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={key}&lang=ja&units=metric"
-url=url.format(city="Tokyo,jp",key=#####(openwethermapで取得したkey)#####
-) # keyには自分のAPIキーを入れる
-r=requests.get(url)
-data=r.json()
+url=url.format(city="Tokyo,jp",key=(openwethermapで取得したkey) # keyには自分のAPIキーを入れる
+r=requests.get(url)#requestsで天気情報を取得
+data=r.json()#json型に変換
 
 #タイムゾーンの設定
 tz=timezone(timedelta(hours=+9),"JST")
 
 #見本標準時に変換・必要な項目を取り出す
-wether_mess=""
+wether_mess=""#空のメッセージ変数を作成
 i=0
 for dat in data["list"]:
     if i<10:

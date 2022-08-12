@@ -17,11 +17,8 @@ class TopView(TemplateView):
         "?format=json&categoryType=large"
         "&applicationId={RakutenAppKey}")
 
-        url=url.format(RakutenAppKey=#####(楽天のAPIキー)#####
-        )
+        url=url.format(RakutenAppKey=(楽天のAPIキー))
         response=requests.get(url)
-
-        #<!--response=requests.get("https://app.rakuten.co.jp/services/api/Recipe/CategoryList/20170426?format=json&categoryType=large&applicationId=1034011073977272415")
 
         context["category_list"]=response.json()["result"]["large"]
 
@@ -43,11 +40,4 @@ class RankingView(TemplateView):
         
         context["ranking"]=response.json()["result"]
         return context
-
-
-
-
-#def someview(request):
-    #return render(request,"top.html",{})
-
 
