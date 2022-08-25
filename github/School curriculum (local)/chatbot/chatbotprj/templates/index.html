@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="{% url 'chatbotapp:chatbot' %}" method="POST">
+        {% csrf_token %}
+        <input class="input_text" placeholder="質問を入力してください（例、おすすめは？）" type="text" name="input_text">
+        <div class="button">
+            <input type="submit" value="送信">
+        </div>
+        <div class="chat-log"></div>
+    </form>
+
+    <script>
+        var $input = document.querySelector('.input_text'); // inputタグ内のクラス名
+        var $chatlog = document.querySelector('.chat-log'); // 結果を追加していくためのdivタグ内のクラス名
+
+        // ユーザーのログを追加する関数
+        function createRow_user(text) {
+            var $row = document.createElement('p');
+            $row.innerText = text;
+            $chatlog.appendChild($row);
+        }
+
+        // ボットのログを追加する関数
+        function createRow_bot(text) {
+            var $row = document.createElement('p');
+            $row.innerText = text;
+            $chatlog.appendChild($row);
+
+            var $br = document.createElement('br');
+            $chatlog.appendChild($br);
+        }
+
+        
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var form = event.target;
+            var formData = new FormData(form);
+            var dataList = [];
+            for(var pair of formData.entries()) {
+                dataList.push(pair[0] + '=' + pair[1]);
+            }
+
+            fetch(form.action, { // 非同期通信するURL（/bot_response/）
+                method: form.method, // POST
+                body: dataList.join('&'), // データの情報
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error();
+                    }
+                })
+                .then(statement => {
+                    createRow_user('あなた：' + $input.value);
+                    createRow_bot(statement);
+                    $input.value = '';
+                    // ログ枠のスクロールを最後の結果に合わせる
+                    $chatlog.scrollTop = $chatlog.scrollHeight;
+                })
+                .catch(() => {
+                    window.alert('もう一度やり直してください');
+                });
+        });
+    </script>
+{% endblock content %}
